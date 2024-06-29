@@ -1,0 +1,72 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@keyframes fadeInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateX(0.5rem);
+    /* equivalent to Tailwind's translate-x-2 */
+  }
+}
+
+@keyframes fadeOutLeft {
+  0% {
+    opacity: 1;
+    transform: translateX(0.5rem);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(0);
+  }
+}
+
+.fade-in-left {
+  animation: fadeInLeft 0.3s ease-in-out forwards;
+}
+
+.fade-out-left {
+  animation: fadeOutLeft 0.3s ease-in-out forwards;
+}
+
+@keyframes lines {
+  0% {
+    transform: rotate(-45deg) translate(-100%, -100%);
+  }
+
+  100% {
+    transform: rotate(-45deg) translate(0, 0);
+  }
+}
+
+@keyframes dance {
+  0% {
+    transform: rotate(-45deg) translate(10%, 10%);
+  }
+
+  50% {
+    transform: rotate(-45deg) translate(-10%, 10%);
+  }
+
+  100% {
+    transform: rotate(-45deg) translate(10%, 10%);
+  }
+}
+
+.dance {
+  animation: dance 3s ease-in-out infinite;
+}
+
+.line-anime {
+  animation-name: lines;
+  animation-duration: 1s;
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+}
