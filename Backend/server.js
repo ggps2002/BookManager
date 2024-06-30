@@ -25,7 +25,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 const saltRounds = 10;
 env.config()
-const frontend_url =  process.env.ORIGIN || 'http://localhost:5173'
+
 const db = new pg.Client({
     user: process.env.PG_USER,
     host: process.env.PG_HOST || "localhost",
@@ -274,12 +274,17 @@ passport.serializeUser((user,cb) => {
     cb(null,user)
 })
 passport.deserializeUser(async (user, cb) => {
-    try {
-        const result = await db.query("SELECT * FROM users WHERE userid = $1", [user.userid]);
-        cb(null, result.rows[0]);
-    } catch (err) {
-        cb(err, null);
-    }
+    function getUserById(userid, callback) {
+        const user = user[userid];
+        if (user) {
+          callback(null, user);
+        } else {
+          callback(new Error('User not found'));
+        }
+      }
+      getUserById(user.userid, (err, user) => {
+        cb(err, user);
+      });
 });
 
 app.listen(port, () => {
