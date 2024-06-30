@@ -111,7 +111,7 @@ app.get('/bookDetails', async (req, res) => {
 
 app.get('/check', (req,res) => {
     console.log(req.isAuthenticated());
-    if (req.isAuthenticated()) {
+    if (req.session.user) {
         res.json({valid: true,userID: req.user.userid, username: req.user.username})
     }else {
         res.json({valid: false});
@@ -162,9 +162,9 @@ app.post('/login/data', (req, res, next) => {
         if (err) {
           return next(err);
         }
-        req.session.save(() => [
+        req.session.save(() => {
             res.json({message: "Authenticated" ,userID: user.userid ,username:user.username})
-        ])
+      })
         
       });
     })(req, res, next);
@@ -189,6 +189,7 @@ app.post('/signup/data', async (req, res) => {
                             if (err) {
                                 console.log(err);
                             } else {
+                                req.session.user = user;
                                 res.json({message: "Authenticated" ,userID: user.userid ,username:user.username})
                             }
                         })
