@@ -97,7 +97,7 @@ app.get('/bookDetails', async (req, res) => {
     }
 })
 
-app.get('/', (req,res) => {
+app.get('/check', (req,res) => {
     console.log(req.isAuthenticated());
     if (req.isAuthenticated()) {
         res.json({valid: true,userID: req.user.userid, username: req.user.username})
