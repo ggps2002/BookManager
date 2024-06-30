@@ -278,6 +278,7 @@ passport.deserializeUser(async (user, cb) => {
     function getUserById(userid, callback) {
         const user = user[userid];
         if (user) {
+        console.log(user);
           callback(null, user);
         } else {
           callback(new Error('User not found'));
