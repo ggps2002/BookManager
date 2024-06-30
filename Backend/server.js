@@ -274,6 +274,7 @@ passport.serializeUser((user,cb) => {
     cb(null,user)
 })
 passport.deserializeUser(async (user, cb) => {
+    console.log("Deserializing User:", user);
     function getUserById(userid, callback) {
         const user = user[userid];
         if (user) {
