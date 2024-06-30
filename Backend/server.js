@@ -240,7 +240,7 @@ passport.use(new Strategy({ usernameField: 'username', passwordField: 'pwd' },as
 passport.use("google", new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:5000/auth/google/callback",
+    callbackURL: "https://bookmanager-uwek.onrender.com/auth/google/callback",
     useProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
 } , async (accessToken, refreshToken, profile, cb) => {
     try {
