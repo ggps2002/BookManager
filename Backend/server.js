@@ -46,7 +46,7 @@ app.use(session({
 }))
 app.use(cookieParser());
 app.use(cors({
-    origin: '*',
+    origin: 'https://mellifluous-kringle-12e9db.netlify.app',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
@@ -71,7 +71,7 @@ app.get('/auth/google/callback', (req,res,next) => {
                 return next(err)
             }
             req.session.save(() => {
-                res.redirect(`${frontend_url}/dashboard?userID=${encodeURIComponent(user.userid)}&username=${encodeURIComponent(user.username)}`);
+                res.redirect(`https://mellifluous-kringle-12e9db.netlify.app/dashboard?userID=${encodeURIComponent(user.userid)}&username=${encodeURIComponent(user.username)}`);
         })
             })
             
