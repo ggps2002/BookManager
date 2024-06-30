@@ -25,6 +25,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 const saltRounds = 10;
 env.config()
+const frontend_url =  process.env.ORIGIN || 'http://localhost:5173'
 const db = new pg.Client({
     user: process.env.PG_USER,
     host: process.env.PG_HOST || "localhost",
@@ -70,7 +71,7 @@ app.get('/auth/google/callback', (req,res,next) => {
                 return next(err)
             }
             req.session.save(() => {
-                res.redirect(`http://localhost:5173/dashboard?userID=${encodeURIComponent(user.userid)}&username=${encodeURIComponent(user.username)}`);
+                res.redirect(`${frontend_url}/dashboard?userID=${encodeURIComponent(user.userid)}&username=${encodeURIComponent(user.username)}`);
         })
             })
             
