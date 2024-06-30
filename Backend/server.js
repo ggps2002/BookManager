@@ -29,7 +29,7 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 30,
-        secure: false
+        secure: true
     },
 }))
 app.use(cookieParser());
