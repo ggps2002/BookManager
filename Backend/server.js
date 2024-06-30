@@ -12,7 +12,9 @@ import cookieParser from "cookie-parser";
 import RedisStore from "connect-redis" ;
 import { createClient } from "redis";
 
-let redisClient = createClient()
+let redisClient = createClient({
+    url: process.env.REDIS_URL || 'redis://localhost:6379'
+})
 redisClient.connect().catch(console.error);
 let redisStore = new RedisStore({
     client: redisClient,
