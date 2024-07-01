@@ -76,6 +76,7 @@ app.get('/auth/google/callback', (req,res,next) => {
             if (err) {
                 return next(err)
             }
+            req.session.user = user
             req.session.save(() => {
                 res.redirect(`${frontend_url}/dashboard?userID=${encodeURIComponent(user.userid)}&username=${encodeURIComponent(user.username)}`);
         })
@@ -173,6 +174,7 @@ app.post('/login/data', (req, res, next) => {
         if (err) {
           return next(err);
         }
+        req.session.user = user
         req.session.save(() => {
             res.json({message: "Authenticated" ,userID: user.userid ,username:user.username})
       })
