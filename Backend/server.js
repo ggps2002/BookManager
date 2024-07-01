@@ -9,22 +9,14 @@ import GoogleStrategy from "passport-google-oauth2";
 import  session  from "express-session";
 import env from "dotenv";
 import cookieParser from "cookie-parser";
-import RedisStore from "connect-redis" ;
-import { createClient } from "redis";
+import MongoStore from "connect-mongo";
 
-let redisClient = createClient({
-    url: process.env.REDIS_URL || 'redis://localhost:6379'
-})
-redisClient.connect().catch(console.error);
-let redisStore = new RedisStore({
-    client: redisClient,
-    prefix: "my-app:",
-})
 
 const app = express();
 const port = process.env.PORT || 5000;
 const saltRounds = 10;
 env.config()
+
 
 const db = new pg.Client({
     user: process.env.PG_USER,
@@ -35,18 +27,22 @@ const db = new pg.Client({
 })
 db.connect()
 app.use(session({
-    store: redisStore,
+    store: MongoStore.create({
+        mongoUrl: process.env.MONGO_URL,
+    }),
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 30,
+        maxAge: 1000 * 60 * 20,
         secure: true
     },
 }))
 app.use(cookieParser());
+const frontend_url = process.env.ORIGIN || 'http://localhost:5173'
+const backend_url = process.env.BACKEND_URL || 'http://localhost:5000'
 app.use(cors({
-    origin: 'https://mellifluous-kringle-12e9db.netlify.app',
+    origin: process.env.ORIGIN || 'http://localhost:5173',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
@@ -71,7 +67,7 @@ app.get('/auth/google/callback', (req,res,next) => {
                 return next(err)
             }
             req.session.save(() => {
-                res.redirect(`https://mellifluous-kringle-12e9db.netlify.app/dashboard?userID=${encodeURIComponent(user.userid)}&username=${encodeURIComponent(user.username)}`);
+                res.redirect(`${frontend_url}/dashboard?userID=${encodeURIComponent(user.userid)}&username=${encodeURIComponent(user.username)}`);
         })
             })
             
@@ -110,8 +106,7 @@ app.get('/bookDetails', async (req, res) => {
 })
 
 app.get('/check', (req,res) => {
-    console.log(req.isAuthenticated());
-    if (req.session.user) {
+    if (req.isAuthenticated()) {
         res.json({valid: true,userID: req.user.userid, username: req.user.username})
     }else {
         res.json({valid: false});
@@ -253,7 +248,7 @@ passport.use(new Strategy({ usernameField: 'username', passwordField: 'pwd' },as
 passport.use("google", new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "https://bookmanager-uwek.onrender.com/auth/google/callback",
+    callbackURL: `${backend_url}/auth/google/callback`,
     useProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
 } , async (accessToken, refreshToken, profile, cb) => {
     try {
@@ -276,18 +271,7 @@ passport.serializeUser((user,cb) => {
 })
 passport.deserializeUser(async (user, cb) => {
     console.log("Deserializing User:", user);
-    function getUserById(userid, callback) {
-        const user = user[userid];
-        if (user) {
-        console.log(user);
-          callback(null, user);
-        } else {
-          callback(new Error('User not found'));
-        }
-      }
-      getUserById(user.userid, (err, user) => {
-        cb(err, user);
-      });
+    cb(null, user)
 });
 
 app.listen(port, () => {
