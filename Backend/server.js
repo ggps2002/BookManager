@@ -10,6 +10,7 @@ import  session  from "express-session";
 import env from "dotenv";
 import cookieParser from "cookie-parser";
 import MongoStore from "connect-mongo";
+import mongoose from "mongoose";
 
 
 const app = express();
@@ -17,6 +18,13 @@ const port = process.env.PORT || 5000;
 const saltRounds = 10;
 env.config()
 
+const mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017'
+
+// Set up session middleware
+const store = MongoStore.create({
+    mongoUrl: mongoURL,
+    collectionName: 'sessions', // Specify the name of the collection
+});
 
 const db = new pg.Client({
     user: process.env.PG_USER,
@@ -24,12 +32,12 @@ const db = new pg.Client({
     database: process.env.PG_DATABASE,
     password: process.env.PG_PASSWORD,
     port: process.env.PG_PORT,
-})
+});
+
 db.connect()
+
 app.use(session({
-    store: MongoStore.create({
-        mongoUrl: process.env.MONGO_URL,
-    }),
+    store: store,
     secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: false,
@@ -109,6 +117,8 @@ app.get('/bookDetails', async (req, res) => {
 
 app.get('/check', (req,res) => {
     console.log(req.session)
+    console.log(req.user);
+    console.log(req.isAuthenticated());
     if (req.isAuthenticated()) {
         res.json({valid: true,userID: req.user.userid, username: req.user.username})
     }else {
@@ -275,9 +285,18 @@ passport.serializeUser((user,cb) => {
     console.log("Serializing User:", user)
     cb(null,user)
 })
-passport.deserializeUser(async (user, cb) => {
-    console.log("Deserializing User:", user);
-    cb(null, user)
+passport.deserializeUser(async (user, done) => {
+    console.log(user);
+    try {
+        const sessionUser = await db.query(`SELECT * FROM users WHERE userid=${user.userid}`)
+        if (sessionUser.rows.length > 0) {
+            done (null,sessionUser.rows[0])
+        } else {
+            done(null, false)
+        }
+    } catch (error) {
+        console.log(error)
+    }
 });
 
 app.listen(port, () => {
