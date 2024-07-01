@@ -106,6 +106,7 @@ app.get('/bookDetails', async (req, res) => {
 })
 
 app.get('/check', (req,res) => {
+    console.log(req.session)
     if (req.isAuthenticated()) {
         res.json({valid: true,userID: req.user.userid, username: req.user.username})
     }else {
@@ -115,6 +116,7 @@ app.get('/check', (req,res) => {
 
 app.get('/delete', async (req,res) => {
     const id  = req.query.id;
+    console.log(id)
     try {
         await db.query(`DELETE FROM bookdetails WHERE bookid = ${id}`);
         res.redirect('/bookDetails')
@@ -126,6 +128,7 @@ app.get('/delete', async (req,res) => {
 app.post('/Edit', async (req,res) =>  {
     const data = req.body;
     const time = new Date();
+    console.log(data)
     try {
         await db.query(`UPDATE bookdetails SET title = $1, author=$2, isbn=$3, brief=$4, DOC=$5, rating=$6, summary=$7,updation=$8 WHERE bookid = ${data.bookID}`,[data.title, data.author, data.isbn, data.brief, data.DOC, data.rating, data.summary, time])
     } catch (error) {
@@ -136,6 +139,7 @@ app.post('/Edit', async (req,res) =>  {
 app.post('/Add', (req,res) => {
     const data = req.body;
     const time = new Date();
+    console.log(data)
     try {
         db.query('INSERT INTO bookdetails (userid, title, author, isbn, brief, DOC, rating, summary, updation) VALUES ($1, $2, $3, $4, $5, $6, $7,$8,$9) ',[ data.id,data.title, data.author, data.isbn, data.brief, data.DOC, data.rating, data.summary,time])
     } catch (error) {
