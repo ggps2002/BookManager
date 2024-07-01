@@ -10,7 +10,6 @@ import  session  from "express-session";
 import env from "dotenv";
 import cookieParser from "cookie-parser";
 import MongoStore from "connect-mongo";
-import mongoose from "mongoose";
 
 
 const app = express();
@@ -43,9 +42,8 @@ app.use(session({
     saveUninitialized: false,
     cookie: {
         maxAge: 1000 * 60 * 20,
-        secure: true,
+        secure: false,
         httpOnly: true,
-        sameSite: 'none',
     },
 }))
 app.use(cookieParser());
@@ -76,7 +74,6 @@ app.get('/auth/google/callback', (req,res,next) => {
             if (err) {
                 return next(err)
             }
-            req.session.user = user
             req.session.save(() => {
                 res.redirect(`${frontend_url}/dashboard?userID=${encodeURIComponent(user.userid)}&username=${encodeURIComponent(user.username)}`);
         })
@@ -174,7 +171,6 @@ app.post('/login/data', (req, res, next) => {
         if (err) {
           return next(err);
         }
-        req.session.user = user
         req.session.save(() => {
             res.json({message: "Authenticated" ,userID: user.userid ,username:user.username})
       })
@@ -202,7 +198,6 @@ app.post('/signup/data', async (req, res) => {
                             if (err) {
                                 console.log(err);
                             } else {
-                                req.session.user = user;
                                 res.json({message: "Authenticated" ,userID: user.userid ,username:user.username})
                             }
                         })
