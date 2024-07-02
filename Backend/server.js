@@ -44,7 +44,7 @@ app.use(session({
         maxAge: 1000 * 60 * 20,
         secure: true,
         httpOnly: true,
-        sameSite: 'lax',
+        SameSite: 'None',
     },
 }))
 app.use(cookieParser());
