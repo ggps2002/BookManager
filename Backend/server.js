@@ -60,8 +60,6 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
-let ord = null;
-
 app.get('/auth/google' ,passport.authenticate("google", {
     scope: ["profile"]
 }))
@@ -83,15 +81,11 @@ app.get('/auth/google/callback', (req,res,next) => {
     }) (req, res, next);
 }) 
 
-app.get('/Order', (req,res) => {
-    const order = req.query.order;
-    ord = order;
-})
-
 app.get('/bookDetails', async (req, res) => {
     try {
         const id = req.query.id
         let books = null;
+        const ord = req.query.sorting
         switch (ord) {
             case "Recent":
                 books = await db.query('SELECT * FROM bookdetails WHERE userid = $1 ORDER BY bookid DESC',[id]);
