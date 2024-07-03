@@ -128,10 +128,11 @@ app.get('/check', (req,res) => {
 
 app.get('/delete', async (req,res) => {
     const id  = req.query.id;
+    const userid = req.query.userid;
     console.log(id)
     try {
         await db.query(`DELETE FROM bookdetails WHERE bookid = ${id}`);
-        res.redirect('/bookDetails')
+        res.redirect(`/bookDetails?id=${encodeURIComponent(userid)}`)
     } catch (error) {
         console.log(error);
     }
@@ -143,6 +144,7 @@ app.post('/Edit', async (req,res) =>  {
     console.log(data)
     try {
         await db.query(`UPDATE bookdetails SET title = $1, author=$2, isbn=$3, brief=$4, DOC=$5, rating=$6, summary=$7,updation=$8 WHERE bookid = ${data.bookID}`,[data.title, data.author, data.isbn, data.brief, data.DOC, data.rating, data.summary, time])
+        res.redirect(`/bookDetails?id=${encodeURIComponent(data.id)}`)
     } catch (error) {
         console.log(error);
     }
