@@ -86,7 +86,8 @@ app.get('/auth/google/callback', (req,res,next) => {
 app.get('/Order', (req,res) => {
     const order = req.query.order;
     ord = order;
-    res.redirect('/bookDetails')
+    const id = req.query.id
+    res.redirect(`/bookDetails?id=${encodeURIComponent(id)}`)
 })
 
 app.get('/bookDetails', async (req, res) => {
