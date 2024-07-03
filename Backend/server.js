@@ -154,6 +154,7 @@ app.post('/Add', (req,res) => {
     console.log(data)
     try {
         db.query('INSERT INTO bookdetails (userid, title, author, isbn, brief, DOC, rating, summary, updation) VALUES ($1, $2, $3, $4, $5, $6, $7,$8,$9) ',[ data.id,data.title, data.author, data.isbn, data.brief, data.DOC, data.rating, data.summary,time])
+        redirect(`/bookDetails?id=${encodeURIComponent(data.id)}`)
     } catch (error) {
         console.log(error)
     }
