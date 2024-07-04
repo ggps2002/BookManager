@@ -121,10 +121,11 @@ app.get('/check', (req,res) => {
 app.get('/delete', async (req,res) => {
     const id  = req.query.id;
     const userid = req.query.userid;
+    const sorting = req.query.sorting
     console.log(id)
     try {
         await db.query(`DELETE FROM bookdetails WHERE bookid = ${id}`);
-        res.redirect(`/bookDetails?id=${encodeURIComponent(userid)}`)
+        res.redirect(`/bookDetails?id=${encodeURIComponent(userid)}&sorting=${encodeURIComponent(sorting)}`)
     } catch (error) {
         console.log(error);
     }
@@ -133,10 +134,11 @@ app.get('/delete', async (req,res) => {
 app.post('/Edit', async (req,res) =>  {
     const data = req.body;
     const time = new Date();
+    const sorting = data.sortingBasis;
     console.log(data)
     try {
         await db.query(`UPDATE bookdetails SET title = $1, author=$2, isbn=$3, brief=$4, DOC=$5, rating=$6, summary=$7,updation=$8 WHERE bookid = ${data.bookID}`,[data.title, data.author, data.isbn, data.brief, data.DOC, data.rating, data.summary, time])
-        res.redirect(`/bookDetails?id=${encodeURIComponent(data.id)}`)
+        res.redirect(`/bookDetails?id=${encodeURIComponent(data.id)}&sorting=${encodeURIComponent(sorting)}`)
     } catch (error) {
         console.log(error);
     }
@@ -145,10 +147,11 @@ app.post('/Edit', async (req,res) =>  {
 app.post('/Add', (req,res) => {
     const data = req.body;
     const time = new Date();
+    const sorting = data.sortingBasis;
     console.log(data)
     try {
         db.query('INSERT INTO bookdetails (userid, title, author, isbn, brief, DOC, rating, summary, updation) VALUES ($1, $2, $3, $4, $5, $6, $7,$8,$9) ',[ data.id,data.title, data.author, data.isbn, data.brief, data.DOC, data.rating, data.summary,time])
-        res.redirect(`/bookDetails?id=${encodeURIComponent(data.id)}`)
+        res.redirect(`/bookDetails?id=${encodeURIComponent(data.id)}&sorting=${encodeURIComponent(sorting)}`)
     } catch (error) {
         console.log(error)
     }
