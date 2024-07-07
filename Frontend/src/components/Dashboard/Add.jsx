@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 
 const Add = (props) => {
     const [details, setDetails] = useState({
-        id: props.id,
+        id: props.id || props.data.userid,
         bookID: props.data ? props.data.bookID : "",
         title: props.data? props.data.title : '',
         author: props.data? props.data.author : '',
@@ -10,8 +10,8 @@ const Add = (props) => {
         isbn: props.data? props.data.isbn : '',
         rating: props.data? props.data.rating : '',
         DOC: props.data? props.data.DOC : '',
-        summary: props.data? props.data.summary : ''
-
+        summary: props.data? props.data.summary : '',
+        sortingBasis: props.sortingBasis || props.data.sortingBasis
     })
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -32,9 +32,8 @@ const Add = (props) => {
         if(props.add){
             props.add();
         }
-        window.location.reload();
          try {
-            await fetch(`http://localhost:5000/${props.head}`, {
+            await fetch(`https://bookmanager-uwek.onrender.com/${props.head}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -45,8 +44,7 @@ const Add = (props) => {
                 if (!response.ok) {
                     throw new Error("Network response is not ok")
                 }
-                const data = response.json();
-                console.log(data.message);
+                window.location.reload();
             })
          } catch (error) {
             console.log(error)

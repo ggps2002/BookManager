@@ -12,13 +12,10 @@ import axios from 'axios';
 axios.defaults.withCredentials = true;
 function Home() {
   const navigate = useNavigate();
-  const [uid, setUid] = useState(0);
   useEffect(() => {
     const fetchData = async () => {
-      setUid(0)
-      axios.get('http://localhost:5000').then( res => {
+      await axios.get('https://bookmanager-uwek.onrender.com/check').then( res => {
         if (res.data.valid) {
-          setUid(1)
           navigate(`/dashboard?userID=${encodeURIComponent(res.data.userID)}&username=${encodeURIComponent(res.data.username)}`)
         }
       }).catch( err => {console.log(err)})
@@ -27,7 +24,7 @@ function Home() {
     fetchData();
     
     // No cleanup needed in this useEffect
-  },[navigate, uid]);
+  },[navigate]);
   return (
     <div >
       <Navbar />

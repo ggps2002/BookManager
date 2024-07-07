@@ -19,8 +19,6 @@ const Card = (props) => {
         setOffCanvas((prev) => ({ ...prev, edit: false }))
     }
     const handleDocumentClick = (event) => {
-        console.log('editRef:', editRef.current, 'delRef:', delRef.current, 'slideRef:', slideRef.current);
-        console.log('event.target:', event.target);
         if (editRef.current && !editRef.current.contains(event.target)) {
             setOffCanvas((prev) => ({ ...prev, edit: false }));
         }
@@ -49,7 +47,7 @@ const Card = (props) => {
     const handleDeleteCard = async () => {
         setOffCanvas((prev) => ({ ...prev, del: !prev.del }))
         try {
-            await fetch(`http://localhost:5000/delete?id=${encodeURIComponent(props.bookID)}`, {
+            await fetch(`https://bookmanager-uwek.onrender.com/delete?id=${encodeURIComponent(props.bookID)}&userid=${encodeURIComponent(props.userid)}&sorting=${encodeURIComponent(props.sortingBasis)}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -58,6 +56,7 @@ const Card = (props) => {
                 if (!response.ok) {
                     throw new Error("Network response was not ok")
                 }
+                window.location.reload()
             })
         } catch (error) {
             console.log(error)
@@ -149,25 +148,30 @@ const Bookcards = (props) => {
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(4);
     useEffect(() => {
-        try {
-            fetch(`http://localhost:5000/bookDetails?id=${encodeURIComponent(props.id)}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            }).then(async response => {
-                const data = await response.json();
-                if (data.val && data.val.length > 0) {
-                    setIsPresent(true);
-                    setUserBooksDetails(data.val)
-                } else {
-                    console.log("No Data");
-                }
-            })
-        } catch (error) {
-            console.log(error)
+        const get = async () => {
+            try {
+                await fetch(`https://bookmanager-uwek.onrender.com/bookDetails?id=${encodeURIComponent(props.id)}&sorting=${encodeURIComponent(props.sortingBasis)}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }).then(async response => {
+                    if (!response.ok) console.log('Network response was not ok');
+                    const data = await response.json();
+                    if (data.val && data.val.length > 0) {
+                        setIsPresent(true);
+                        setUserBooksDetails(data.val)
+                    } else {
+                        console.log("No Data");
+                    }
+                })
+            } catch (error) {
+                console.log(error)
+            }
         }
-    }, [userBooksDetails])
+        get()
+    }, [props.sortingBasis])
+    console.log(userBooksDetails)
     const booksPerPage = getPages(userBooksDetails, page, limit);
     const totalPages = Math.ceil(getLength(userBooksDetails) / limit);
     const pageInd = paginationRange(totalPages, page, limit, 1);
@@ -176,7 +180,7 @@ const Bookcards = (props) => {
             <div className="mt-3">
                 {isPresent && booksPerPage.map((bookDetails, index) => {
                     return (
-                        bookDetails && <Card key={index} id={index} bookID={bookDetails.bookid} title={bookDetails.title} author={bookDetails.author} rating={bookDetails.rating} DOC={bookDetails.doc} brief={bookDetails.brief} isbn={bookDetails.isbn} summary={bookDetails.summary} time={bookDetails.updation} />
+                        bookDetails && <Card key={index} id={index} userid={props.id} bookID={bookDetails.bookid} title={bookDetails.title} author={bookDetails.author} rating={bookDetails.rating} DOC={bookDetails.doc} brief={bookDetails.brief} isbn={bookDetails.isbn} summary={bookDetails.summary} time={bookDetails.updation} sortingBasis={props.sortingBasis}/>
                     )
                 })}
             </div>

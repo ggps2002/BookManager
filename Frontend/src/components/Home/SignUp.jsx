@@ -66,7 +66,7 @@ const SignUp = () => {
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
         try {
-            await fetch("http://localhost:5000/login/data", {
+            await fetch(`https://bookmanager-uwek.onrender.com/login/data`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -111,7 +111,7 @@ const SignUp = () => {
         }
         else {
             try {
-                await fetch("http://localhost:5000/signup/data", {
+                await fetch("https://bookmanager-uwek.onrender.com/signup/data", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ const SignUp = () => {
     }
     
     const handleGoogleSignin = async () => {
-    window.open("http://localhost:5000/auth/google", '_self');    
+    window.open("https://bookmanager-uwek.onrender.com/auth/google", '_self');    
 };
 
     return (

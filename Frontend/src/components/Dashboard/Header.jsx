@@ -13,7 +13,6 @@ const Header = (props) => {
     Title: false,
     Rating: false,
   })
-  const [ord, setOrd] = useState("Recent");
   const addRef = useRef(null);
   const handleDocumentClick = (event) => {
     if (addRef.current && !addRef.current.contains(event.target)) {
@@ -53,25 +52,6 @@ const Header = (props) => {
   const handleAddClick = () => {
     setAdd((prev) => !prev);
   };
-  const handleSort = (ordName) => {
-    setOrd(ordName);
-  }
-  useEffect(() => {
-    try {
-      fetch(`http://localhost:5000/Order?order=${encodeURIComponent(ord)}`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }).then(async response => {
-        if(!response.ok) {
-          throw new Error('Network response is not ok');
-        }
-      })
-    } catch (error) {
-      console.log(error)
-    }
-  }, [ord])
   return (
     <>
       <div className='w-full flex justify-between px-10 pt-[2vh] bg-white '>
@@ -101,31 +81,13 @@ const Header = (props) => {
                 </div>
                 <ul className={`absolute -left-4 bg-white shadow-lg rounded z-20 m-0 p-0 ${!dropdownOpen && 'hidden'} cursor-pointer`}>
                   <li className='w-full hover:bg-slate-300 px-7 py-2' onClick={() => {
-                    setSorting((prev) => {
-                      return {
-                        ...prev,
-                        Recent: true,
-                      }
-                    })
-                    handleSort("Recent")
+                    props.changeSortingBasis("Recent")
                   }}>Read recently</li>
                   <li className='w-full hover:bg-slate-300 px-7 py-2' onClick={() => {
-                    setSorting((prev) => {
-                      return {
-                        ...prev,
-                        Title: true,
-                      }
-                    })
-                    handleSort("Title")
+                    props.changeSortingBasis("Title")
                   }}>Title</li>
                   <li className='w-full hover:bg-slate-300 px-7 py-2' onClick={() => {
-                    setSorting((prev) => {
-                      return {
-                        ...prev,
-                        Rating: true,
-                      }
-                    })
-                    handleSort("Rating")
+                    props.changeSortingBasis("Rating")
                   }}>Rating</li>
                 </ul>
               </li>
@@ -150,31 +112,14 @@ const Header = (props) => {
                 </button>
                 <ul class="dropdown-menu" >
                   <li><a class="dropdown-item" href="#" onClick={() => {
-                    setSorting((prev) => {
-                      return {
-                        ...prev,
-                        Title: true,
-                      }
-                    })
-                    handleSort("Title")
+                    props.changeSortingBasis("Title")
                   }}>Title</a></li>
                   <li><a class="dropdown-item" href="#" onClick={() => {
-                    setSorting((prev) => {
-                      return {
-                        ...prev,
-                        Recent: true,
-                      }
-                    })
-                    handleSort("Recent")
+                    props.changeSortingBasis("Recent")
                   }}>Read recently</a></li>
                   <li><a class="dropdown-item" href="#" onClick={() => {
-                    setSorting((prev) => {
-                      return {
-                        ...prev,
-                        Rating: true,
-                      }
-                    })
-                    handleSort("Rating")
+                    props.changeSortingBasis("Rating")
+                    
                   }}>Rating</a></li>
                 </ul>
               </li>
@@ -185,7 +130,7 @@ const Header = (props) => {
         </div>
         <div ref={addRef} className={`no-scrollbar absolute top-0 xs:p-0 lg:p-5 overflow-y-auto z-50 md:w-3/4 xs:w-full bg-orange-200 h-screen ${add ? "-translate-x-10" : "-translate-x-[200%]"} transition-all ease-in-out`}>
           <ClearIcon fontSize='large' onClick={handleAddClick} className='lg:hidden cursor-pointer' />
-          <Add className="absolute top-0" head="Add" id={props.id} add={handleAddOffCanvas}/>
+          <Add className="absolute top-0" head="Add" id={props.id} add={handleAddOffCanvas} sortingBasis={props.sortingBasis}/>
         </div>
       </div>
     </>
