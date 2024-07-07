@@ -125,7 +125,6 @@ app.get('/delete', async (req,res) => {
     console.log(id)
     try {
         await db.query(`DELETE FROM bookdetails WHERE bookid = ${id}`);
-        res.redirect(`/bookDetails?id=${encodeURIComponent(userid)}&sorting=${encodeURIComponent(sorting)}`)
     } catch (error) {
         console.log(error);
     }
