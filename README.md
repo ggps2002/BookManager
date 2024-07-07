@@ -22,5 +22,8 @@ This application allows users to manage and track details of the books they read
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/your-username/book-manager-app.git
-   cd book-manager-app
+   git clone https://github.com/ggps2002/BookManager.git
+   cd Frontend
+   npm run dev
+   cd Backend
+   nodemon server.js / node server.js
