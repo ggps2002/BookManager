@@ -12,7 +12,7 @@ This application allows users to manage and track details of the books they read
 
 ## Tech Stack
 
-- **Frontend:** React
+- **Frontend:** React, TailwindCSS
 - **Backend:** Node.js, Express.js
 - **Database:** PostgreSQL, MongoDB
 - **Authentication:** Passport.js with Google OAuth
