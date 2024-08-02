@@ -2,7 +2,6 @@ import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import React, { useState, useEffect, useRef } from "react";
 import ClearIcon from '@mui/icons-material/Clear';
 import Add from "./Add";
-import DOMPurify from 'dompurify';
 import { getPages, getLength, paginationRange } from "../../constants/Booksdata";
 import ReactTimeAgo from 'react-time-ago';
 
@@ -62,8 +61,6 @@ const Card = (props) => {
             console.log(error)
         }
     }
-    const rawHtmlContent = props.summary;
-    const sanitizedHtmlContent = DOMPurify.sanitize(rawHtmlContent);
     return (
         <div className={`max-w-full `}>
             <div className="card mb-3 max-w-[500px] relative  xlg:mt-5 md:ml-5">
@@ -123,7 +120,7 @@ const Card = (props) => {
                     }} className="cursor-pointer"><ClearIcon fontSize="large" /></div>
                     <div className="text-center"><h3>{props.title}</h3></div>
                     <div className="mt-5">
-                        <div dangerouslySetInnerHTML={{ __html: sanitizedHtmlContent }} />
+                        {props.summary}
                     </div>
                 </div>
             </div>
