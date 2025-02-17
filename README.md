@@ -2,6 +2,14 @@
 
 This application allows users to manage and track details of the books they read. Users can log in, add book details, and sort their books based on ratings, title, or recency.
 
+### Demo Vidoe
+
+
+
+
+https://github.com/user-attachments/assets/daeaf910-066b-4348-ac9b-c5a1d6434486
+
+
 ## Features
 
 - **Authentication:** Users authenticate via Google OAuth before accessing their dashboard.
